@@ -1,0 +1,182 @@
+"use client"
+
+import { useState } from "react"
+import "./ContactForm.css"
+
+export default function ContactForm() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  })
+
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState("")
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    })
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    setIsSubmitting(true)
+
+    // Simulate form submission
+    setTimeout(() => {
+      setIsSubmitting(false)
+      setSubmitStatus("success")
+      setFormData({ name: "", email: "", subject: "", message: "" })
+
+      setTimeout(() => {
+        setSubmitStatus("")
+      }, 3000)
+    }, 1500)
+  }
+
+  return (
+    <div className="contact-wrapper">
+      <div className="container">
+        <div className="row justify-content-center">
+          <div className="col-lg-8 col-md-10">
+            <div className="contact-form-container">
+              <div className="text-center mb-5">
+                <h2 className="contact-title">Get In Touch</h2>
+                <p className="contact-subtitle">
+                  We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+                </p>
+              </div>
+
+              {submitStatus === "success" && (
+                <div className="alert alert-success success-message" role="alert">
+                  <span className="contact-icon icon-check me-2"></span>
+                  Thank you! Your message has been sent successfully.
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="contact-form">
+                <div className="row">
+                  <div className="col-md-6 mb-4">
+                    <div className="form-group">
+                      <label htmlFor="name" className="form-label">
+                        Full Name <span className="required">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter your full name"
+                      />
+                    </div>
+                  </div>
+                  <div className="col-md-6 mb-4">
+                    <div className="form-group">
+                      <label htmlFor="email" className="form-label">
+                        Email Address <span className="required">*</span>
+                      </label>
+                      <input
+                        type="email"
+                        className="form-control"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        placeholder="Enter your email address"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <div className="form-group">
+                    <label htmlFor="subject" className="form-label">
+                      Subject <span className="required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      required
+                      placeholder="What's this about?"
+                    />
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <div className="form-group">
+                    <label htmlFor="message" className="form-label">
+                      Message <span className="required">*</span>
+                    </label>
+                    <textarea
+                      className="form-control"
+                      id="message"
+                      name="message"
+                      rows="6"
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
+                      placeholder="Tell us more about your inquiry..."
+                    ></textarea>
+                  </div>
+                </div>
+
+                <div className="text-center">
+                  <button type="submit" className="btn btn-primary submit-btn" disabled={isSubmitting}>
+                    {isSubmitting ? (
+                      <>
+                        <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Sending...
+                      </>
+                    ) : (
+                      <>
+                        <span className="icon-send me-2"></span>
+                        Send Message
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+
+              <div className="contact-info mt-5">
+                <div className="row text-center">
+                  <div className="col-md-4 mb-3">
+                    <div className="contact-info-item">
+                      <span className="contact-icon icon-email"></span>
+                      <h6>Email</h6>
+                      <p>hello@example.com</p>
+                    </div>
+                  </div>
+                  <div className="col-md-4 mb-3">
+                    <div className="contact-info-item">
+                      <span className="contact-icon icon-phone"></span>
+                      <h6>Phone</h6>
+                      <p>+1 (555) 123-4567</p>
+                    </div>
+                  </div>
+                  <div className="col-md-4 mb-3">
+                    <div className="contact-info-item">
+                      <span className="contact-icon icon-location"></span>
+                      <h6>Address</h6>
+                      <p>123 Main St, City, State</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
