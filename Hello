@@ -54,3 +54,44 @@ export default function LeaderModal({ leader, onClose }) {
     </div>
   );
 }
+
+
+leadership section 
+import React, { useState } from "react";
+import LeadershipCard from "./LeadershipCard";
+import LeaderModal from "./LeaderModal";
+
+export default function LeadershipSection() {
+  const [selectedLeader, setSelectedLeader] = useState(null);
+
+  const leadershipTeam = [
+    {
+      id: 1,
+      name: "Sarah Johnson",
+      position: "CEO",
+      photo: "/placeholder.svg",
+      description: "Sarah has 20 years of experience in managing multinational teams.",
+    },
+    {
+      id: 2,
+      name: "Michael Chen",
+      position: "CTO",
+      photo: "/placeholder.svg",
+      description: "Michael leads our tech department with a focus on innovation.",
+    },
+  ];
+
+  return (
+    <>
+      <div className="row g-4">
+        {leadershipTeam.map((leader) => (
+          <div key={leader.id} className="col-md-6 col-lg-4">
+            <LeadershipCard leader={leader} onClick={setSelectedLeader} />
+          </div>
+        ))}
+      </div>
+
+      <LeaderModal leader={selectedLeader} onClose={() => setSelectedLeader(null)} />
+    </>
+  );
+}
