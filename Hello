@@ -53,3 +53,47 @@ export default function LeadershipCard({ leader, onClick }) {
     </div>
   );
 }
+
+
+
+leadership section 
+import React, { useState } from "react";
+import LeadershipCard from "./LeadershipCard";
+import LeaderModal from "./LeaderModal";
+
+export default function LeadershipSection() {
+  const [selectedLeader, setSelectedLeader] = useState(null);
+
+  const leadershipTeam = [
+    {
+      id: 1,
+      name: "Sarah Johnson",
+      position: "Chief Executive Officer",
+      photo: "/placeholder.svg?height=300&width=300",
+      description: "With over 20 years of industry experience, Sarah leads our company with vision and strategic insight.",
+    },
+    // ... other leaders
+  ];
+
+  const handleCardClick = (leader) => {
+    setSelectedLeader(leader);
+  };
+
+  return (
+    <section className="leadership-section">
+      <div className="row g-4">
+        {leadershipTeam.map((leader) => (
+          <div key={leader.id} className="col-md-6 col-lg-4">
+            <LeadershipCard leader={leader} onClick={handleCardClick} />
+          </div>
+        ))}
+      </div>
+
+      <LeaderModal
+        leader={selectedLeader}
+        show={selectedLeader !== null}
+        onClose={() => setSelectedLeader(null)}
+      />
+    </section>
+  );
+}
