@@ -22,3 +22,35 @@ export default function LeadershipCard({ leader, onClick }) {
     </div>
   );
 }
+
+
+
+leadermodel 
+import React from "react";
+
+export default function LeaderModal({ leader, onClose }) {
+  if (!leader) return null;
+
+  return (
+    <div className="modal show d-block bg-dark bg-opacity-75" tabIndex="-1" onClick={onClose}>
+      <div className="modal-dialog modal-lg modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-content">
+          <div className="modal-header">
+            <h5 className="modal-title">{leader.name}</h5>
+            <button type="button" className="btn-close" onClick={onClose}></button>
+          </div>
+          <div className="modal-body text-center">
+            <img
+              src={leader.photo}
+              alt={leader.name}
+              className="rounded-circle mb-3"
+              style={{ width: "180px", height: "180px", objectFit: "cover", border: "3px solid #f8f9fa" }}
+            />
+            <h6 className="text-primary">{leader.position}</h6>
+            <p className="text-muted">{leader.description}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
