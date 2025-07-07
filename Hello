@@ -1,105 +1,39 @@
-leadership card
-import React from "react";
-
-export default function LeadershipCard({ leader, onClick }) {
-  return (
-    <div className="card h-100 shadow-sm border-0 leadership-card" onClick={() => onClick(leader)} style={{ cursor: "pointer" }}>
-      <div className="text-center p-3">
-        <div className="position-relative mx-auto" style={{ width: "180px", height: "180px" }}>
-          <img
-            src={leader.photo}
-            alt={leader.name}
-            className="rounded-circle border border-3 border-light shadow"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        </div>
-      </div>
-      <div className="card-body text-center">
-        <h3 className="card-title fw-bold">{leader.name}</h3>
-        <p className="text-primary fw-semibold mb-3">{leader.position}</p>
-        <p className="card-text text-muted">{leader.description.substring(0, 60)}...</p>
-      </div>
-    </div>
-  );
-}
+The system should allow users to define a "pay day" — a recurring monthly date — that acts as a reference point for aligning expected demand spikes. This is not limited to salary-based purchases, but also applies to calendar-based events (e.g., holidays or predictable monthly shopping cycles) which may fall in different weeks in different years. The system should use this pay day to apply shifting logic, ensuring demand spikes are matched correctly with the right calendar weeks during training and forecasting.
 
 
 
-leadermodel 
-import React from "react";
+The system shall include a boolean parameter named enable_payday_impact under the system_params table.
 
-export default function LeaderModal({ leader, onClose }) {
-  if (!leader) return null;
+If enable_payday_impact is set to false, all pay day logic is ignored.
 
-  return (
-    <div className="modal show d-block bg-dark bg-opacity-75" tabIndex="-1" onClick={onClose}>
-      <div className="modal-dialog modal-lg modal-dialog-centered" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">{leader.name}</h5>
-            <button type="button" className="btn-close" onClick={onClose}></button>
-          </div>
-          <div className="modal-body text-center">
-            <img
-              src={leader.photo}
-              alt={leader.name}
-              className="rounded-circle mb-3"
-              style={{ width: "180px", height: "180px", objectFit: "cover", border: "3px solid #f8f9fa" }}
-            />
-            <h6 className="text-primary">{leader.position}</h6>
-            <p className="text-muted">{leader.description}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+If enable_payday_impact is set to true, the system reads the value of another parameter payday_date, which is a day between 1 and 31 representing the recurring reference day each month.
+
+The system assumes this pay day will occur once every month (total 12 times a year) and will use it to track demand surges following this date.
+
+The system should apply a demand impact logic that increases expected demand for the next 14 days (2 weeks) after each pay day.
+
+The system must implement week-shifting logic so that even if the pay day falls in different weeks across years, the forecast model still learns and applies the spike to the correct calendar week.
 
 
-leadership section 
-import React, { useState } from "react";
-import LeadershipCard from "./LeadershipCard";
-import LeaderModal from "./LeaderModal";
 
-export default function LeadershipSection() {
-  const [selectedLeader, setSelectedLeader] = useState(null);
+✅ User can enable or disable the pay day impact using enable_payday_impact.
 
-  const leadershipTeam = [
-    {
-      id: 1,
-      name: "Sarah Johnson",
-      position: "CEO",
-      photo: "/placeholder.svg",
-      description: "Sarah has 20 years of experience in managing multinational teams.",
-    },
-    {
-      id: 2,
-      name: "Michael Chen",
-      position: "CTO",
-      photo: "/placeholder.svg",
-      description: "Michael leads our tech department with a focus on innovation.",
-    },
-  ];
+✅ When enabled, user can configure the payday_date (1–31), which applies monthly.
 
-  return (
-    <>
-      <div className="row g-4">
-        {leadershipTeam.map((leader) => (
-          <div key={leader.id} className="col-md-6 col-lg-4">
-            <LeadershipCard leader={leader} onClick={setSelectedLeader} />
-          </div>
-        ))}
-      </div>
+✅ The system assumes 12 such events per year — one per month — based on the configured date.
 
-      <LeaderModal leader={selectedLeader} onClose={() => setSelectedLeader(null)} />
-    </>
-  );
-}
+✅ A 2-week demand hike window should be applied after each occurrence of the pay day.
+
+✅ The system can handle and correctly shift these windows when pay day or similar events fall in different weeks across different years.
+
+✅ Forecast models must take this window into account during both historical training and future prediction phases.
+
+✅ If the feature is disabled, neither payday_date nor any of its effects are used in the forecast pipeline.
 
 
 
 
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-  rel="stylesheet"
-/>
+Some demand patterns happen around specific dates every month — like salary spending or monthly shopping habits — and these patterns often repeat. However, because the calendar shifts every year, these dates may land in different weeks. This can confuse the forecasting model if not handled properly.
+
+By letting users define a monthly "pay day," the system gains a reliable reference to anchor and shift these recurring patterns, keeping the learning and predictions accurate — even when the calendar week changes. It helps the model understand when and why spikes happen, and adjust accordingly.
+
